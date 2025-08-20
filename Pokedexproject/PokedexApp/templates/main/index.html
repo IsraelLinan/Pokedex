@@ -28,7 +28,7 @@
             <h2>Peso: {{ peso }}</h2>
 
             <!-- Ilustración HD con fallback al sprite clásico -->
-            <h2>Ilustración HD:</h2>
+            
             <img src="{{ artwork|default:sprite }}" alt="Ilustración oficial de {{ nombre }}" class="pokemon-artwork">
         {% else %}
             <div>
