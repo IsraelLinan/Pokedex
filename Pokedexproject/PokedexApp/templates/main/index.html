@@ -10,7 +10,7 @@
     <title>Pokédex</title>
 </head>
 <body>
-    <h1>Entrenador Dario Linan Marquez</h1> 
+    <h1>Pokedex</h1> 
     <!-- Imagen de cabecera -->
     <img src="{% static 'img/pokedex.png' %}" class="image" style="width:160px;" alt="Pokédex">
 
@@ -25,40 +25,56 @@
             <button type="submit" name="action" value="prev" {% if not numero %}disabled{% endif %}>◀ Anterior</button>
             <button type="submit" name="action" value="next" {% if not numero %}disabled{% endif %}>Siguiente ▶</button>
         </div>
-
     </form>
 
-        {% if error %}
-            <h2 class="error">{{ error }}</h2>
-        {% endif %}
+    {% if error %}
+        <h2 class="error">{{ error }}</h2>
+    {% endif %}
 
-    
-        {% if numero and nombre %}
-            <h2>Número: {{ numero }}</h2>
-            <h2>Nombre: {{ nombre }}</h2>
-            <h2>Altura: {{ altura }}</h2>
-            <h2>Peso: {{ peso }}</h2>
+    {% if numero and nombre %}
+        <h2>Número: {{ numero }}</h2>
+        <h2>Nombre: {{ nombre }}</h2>
+        <h2>Altura: {{ altura }}</h2>
+        <h2>Peso: {{ peso }}</h2>
         <h2>
-        {% if tipos %}
-            <p>Tipo{% if tipos|length > 1 %}s{% endif %}:
-             <span class="type-badges">
-              {% for t in tipos %}
-                <span class="type-badge">{{ t }}</span>{% if not forloop.last %}{% endif %}
-              {% endfor %}
-             </span>
-            </p>
-        {% endif %}
+            {% if tipos %}
+                <p>Tipo{% if tipos|length > 1 %}s{% endif %}:
+                 <span class="type-badges">
+                  {% for t in tipos %}
+                    <span class="type-badge">{{ t }}</span>{% if not forloop.last %}{% endif %}
+                  {% endfor %}
+                 </span>
+                </p>
+            {% endif %}
         </h2>
 
+        <!-- Ilustración HD con fallback al sprite clásico -->
+        <img src="{{ artwork|default:sprite }}" alt="Ilustración oficial de {{ nombre }}" class="pokemon-artwork">
 
-            <!-- Ilustración HD con fallback al sprite clásico -->
-            
-            <img src="{{ artwork|default:sprite }}" alt="Ilustración oficial de {{ nombre }}" class="pokemon-artwork">
-        {% else %}
-            <div>
-                <h2>Escribe el nombre o ID de tu Pokémon.</h2>
+        <!-- === NUEVO: Estadísticas base con barras === -->
+        {% if stats %}
+        <section class="stats-card" aria-label="Estadísticas base">
+            <h3>Estadísticas base</h3>
+
+            {% for s in stats %}
+            <div class="stat-row k-{{ s.key }}">
+              <span class="stat-label">{{ s.label }}</span>
+              <div class="stat-bar" role="progressbar" aria-valuemin="0" aria-valuemax="255" aria-valuenow="{{ s.value }}">
+                <div class="stat-fill k-{{ s.key }}" style="width: {{ s.percent }}%"></div>
+              </div>
+              <span class="stat-value">{{ s.value }}</span>
             </div>
+            {% endfor %}
+
+            <div class="stat-total">Total: {{ total }}</div>
+        </section>
         {% endif %}
-    
+
+    {% else %}
+        <div>
+            <h2>Escribe el nombre o ID de tu Pokémon.</h2>
+        </div>
+    {% endif %}
 </body>
 </html>
+

@@ -96,3 +96,120 @@ button:hover {
   .pokemon-artwork{ width: 240px; }
 }
 
+/* ====== Stats Card (Pokédex) ====== */
+.stats-card{
+  width: min(720px, 92vw);
+  margin: 0 auto 3.2rem;
+  padding: 1.6rem 2rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  box-shadow: 0 12px 24px rgba(0,0,0,.18);
+  backdrop-filter: blur(2px);
+  text-align: left;
+}
+
+.stats-card h3{
+  font-size: 2.2rem;
+  margin-bottom: 1.2rem;
+  color: var(--text);
+}
+
+.stat-row{
+  display: grid;
+  grid-template-columns: 120px 1fr 48px;
+  gap: 10px;
+  align-items: center;
+  margin: .6rem 0;
+}
+
+.stat-label{
+  font-size: 1.5rem;
+  opacity: .9;
+}
+
+.stat-bar{
+  position: relative;
+  height: 12px;
+  background: #1f2937;            /* gris oscuro para contraste */
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.stat-fill{
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #e00000, #f43f5e);
+  border-radius: 999px;
+  transition: width .35s ease-in-out;
+}
+
+.stat-value{
+  font-size: 1.4rem;
+  text-align: right;
+  opacity: .95;
+}
+
+.stat-total{
+  margin-top: 1.2rem;
+  font-weight: 700;
+  font-size: 1.6rem;
+  text-align: right;
+  color: var(--text);
+  opacity: .95;
+}
+
+/* (Opcional) Badges de tipo, suaves para tema oscuro */
+.type-badges{ display:inline-flex; gap:.6rem; flex-wrap:wrap; vertical-align: middle; }
+.type-badge{
+  display:inline-block;
+  padding:.2rem .8rem;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:999px;
+  font-size:1.3rem;
+  background: rgba(255,255,255,.04);
+  color:var(--text);
+}
+
+/* ===== Colores por stat ===== */
+/* Fallback neutro (si no matchea ninguna clase) */
+.stat-fill{
+  background: linear-gradient(90deg, #6b7280, #9ca3af);
+}
+
+/* HP (verde) */
+.stat-fill.k-hp{
+  background: linear-gradient(90deg, #059669, #22c55e);
+}
+
+/* Attack (rojo → naranja) */
+.stat-fill.k-attack{
+  background: linear-gradient(90deg, #dc2626, #f97316);
+}
+
+/* Defense (amarillo) */
+.stat-fill.k-defense{
+  background: linear-gradient(90deg, #ca8a04, #facc15);
+}
+
+/* Special Attack (índigo → violeta) */
+.stat-fill.k-special-attack{
+  background: linear-gradient(90deg, #4f46e5, #8b5cf6);
+}
+
+/* Special Defense (teal → cian) */
+.stat-fill.k-special-defense{
+  background: linear-gradient(90deg, #0d9488, #06b6d4);
+}
+
+/* Speed (azul) */
+.stat-fill.k-speed{
+  background: linear-gradient(90deg, #2563eb, #60a5fa);
+}
+
+.stat-row.k-hp .stat-label{ color:#86efac; }
+.stat-row.k-attack .stat-label{ color:#fca5a5; }
+.stat-row.k-defense .stat-label{ color:#fde68a; }
+.stat-row.k-special-attack .stat-label{ color:#c7d2fe; }
+.stat-row.k-special-defense .stat-label{ color:#99f6e4; }
+.stat-row.k-speed .stat-label{ color:#93c5fd; }

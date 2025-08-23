@@ -1,4 +1,4 @@
-# views.py (reemplaza el contenido actual por este)
+# views.py
 from django.shortcuts import render
 import urllib.request
 import urllib.parse
@@ -20,11 +20,8 @@ def index(request):
             # Si viene acción de navegación y current_id es entero -> navegar
             if action in ('prev', 'next') and current_id.isdigit():
                 cid = int(current_id)
-                if action == 'prev':
-                    new_id = max(1, cid - 1)
-                else:
-                    new_id = cid + 1
-                lookup = str(new_id)  # buscarmos por ID
+                new_id = max(1, cid - 1) if action == 'prev' else cid + 1
+                lookup = str(new_id)  # buscamos por ID
                 data['query'] = lookup
             else:
                 # Si el usuario escribió algo (nombre o id), usamos eso
@@ -49,14 +46,40 @@ def index(request):
             height = round(float(list_of_data.get('height', 0)) * 0.1, 2)
             weight = round(float(list_of_data.get('weight', 0)) * 0.1, 2)
 
-            artwork = list_of_data.get('sprites', {}) \
-                                 .get('other', {}) \
-                                 .get('official-artwork', {}) \
-                                 .get('front_default')
-            sprite = list_of_data.get('sprites', {}).get('front_default')
+            sprites = list_of_data.get('sprites', {})
+            artwork = sprites.get('other', {}).get('official-artwork', {}).get('front_default')
+            sprite = sprites.get('front_default')
 
             # Tipos capitalizados
             types = [t['type']['name'].capitalize() for t in list_of_data.get('types', [])]
+
+            # === Estadísticas base ===
+            # Mapeo a etiquetas en español
+            name_map = {
+                'hp': 'PS',
+                'attack': 'Ataque',
+                'defense': 'Defensa',
+                'special-attack': 'At. Esp.',
+                'special-defense': 'Def. Esp.',
+                'speed': 'Velocidad',
+            }
+
+            raw_stats = list_of_data.get('stats', [])
+            processed_stats = []
+            total_stats = 0
+            for s in raw_stats:
+                key = s.get('stat', {}).get('name', '')
+                label = name_map.get(key, key.replace('-', ' ').title())
+                value = int(s.get('base_stat', 0))
+                # Porcentaje contra 255 (máximo histórico de base stats)
+                percent = max(0, min(100, round((value / 255) * 100)))
+                processed_stats.append({
+                    "key": key,
+                    "label": label,
+                    "value": value,
+                    "percent": percent,
+                })
+                total_stats += value
 
             numero = str(list_of_data.get('id', ''))
 
@@ -68,9 +91,12 @@ def index(request):
                 "sprite": sprite,
                 "artwork": artwork,
                 "tipos": types,
+                "stats": processed_stats,
+                "total": total_stats,
                 # mantenemos query para rellenar el input
                 "query": data.get('query', numero),
             })
+
         # GET o POST procesado -> render
         return render(request, 'main/index.html', data)
 
@@ -91,6 +117,7 @@ def index(request):
         logger.exception("Error inesperado en la vista index")
         data['error'] = "Ocurrió un error inesperado. Revisa los logs del servidor."
         return render(request, 'main/index.html', data)
+
 
         
             
